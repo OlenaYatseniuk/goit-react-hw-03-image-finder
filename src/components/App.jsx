@@ -26,7 +26,7 @@ export class App extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { query, page, items } = this.state;
+    const { query, page } = this.state;
     const prevQuery = prevState.query;
     const prevPage = prevState.page;
 
@@ -36,23 +36,19 @@ export class App extends Component {
     }
 
     if (query.trim() && (prevQuery !== query || prevPage !== page)) {
-      this.setState({status: STATUS.pending});
+      this.setState({ status: STATUS.pending });
 
       fetchImagesByValue(query, page)
         .then(({ data: { hits, totalHits } }) => {
-          console.log(hits);
-          console.log(page);
 
           if (hits.length === 0) {
             toast.error(
               "Sorry, we didn't find such images. Try another word, please."
             );
-            this.setState({status: STATUS.resolved, items: []});
+            this.setState({ status: STATUS.resolved, items: [] });
             return;
           }
           if (prevQuery === query && prevPage !== page) {
-            console.log('change page');
-            console.log(items);
 
             this.setState(prevState => ({
               items: [...prevState.items, ...hits],
@@ -77,8 +73,7 @@ export class App extends Component {
   }
 
   onSearch = value => {
-    console.log(value);
-    if( value === this.state.query){
+    if (value === this.state.query) {
       return;
     }
     this.setState({
@@ -99,10 +94,10 @@ export class App extends Component {
       <div className={s.app}>
         <Searchbar onSubmit={this.onSearch} />
         <ImageGallery items={items} />
-        {status === 'pending' && <Loader/>}
-        {items.length !== 0 &&( page < totalPages &&
+        {status === 'pending' && <Loader />}
+        {items.length !== 0 && page < totalPages && (
           <Button onClick={this.handleLoadMore} />
-          )}
+        )}
         <ToastContainer position="top-right" autoClose={2000} />
       </div>
     );
